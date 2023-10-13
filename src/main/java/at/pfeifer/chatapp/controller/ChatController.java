@@ -31,13 +31,20 @@ public class ChatController implements Initializable {
     private Button sendButton;
 
     @FXML
+    private TextField userName;
+
+    String userNameText;
+
+    @FXML
     void sendMessage() {
         String message = messageInput.getText();
+
         if (message.isEmpty()) return;
+        String messageWithUserName = combineUserNameWithMessage(message, userNameText);
 
         try {
-            ClientService.sendMessage(message);
-            displayMessage(message);
+            ClientService.sendMessage(messageWithUserName);
+            displayMessage(messageWithUserName);
             messageInput.clear();
         } catch (NotStartedException e) {
             System.err.println("Cannot send message because the client wasn't started");
@@ -62,6 +69,19 @@ public class ChatController implements Initializable {
             ClientService.setConsumer(this::displayMessage);
         } catch (NotStartedException e) {
             System.err.println("User wasn't started");
+        }
+    }
+
+    @FXML
+    void setUserName() {
+        userNameText = userName.getText();
+    }
+
+    public String combineUserNameWithMessage(String message, String userName){
+        if (userName.isEmpty() || userName == null){
+            return "[]- " + message;
+        }else {
+            return String.format("[%s]- %s", userName, message);
         }
     }
 }
