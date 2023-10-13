@@ -37,7 +37,6 @@ public class ChatController implements Initializable {
         if (message.isEmpty()) return;
         String messageWithSignature= combineMessageWithSignature(message, signatureInput.getText());
 
-
         try {
             ClientService.sendMessage(messageWithSignature);
             displayMessage(messageWithSignature);
