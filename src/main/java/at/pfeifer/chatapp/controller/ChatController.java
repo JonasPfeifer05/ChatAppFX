@@ -30,10 +30,8 @@ public class ChatController implements Initializable {
     @FXML
     private Button sendButton;
 
-    @FXML
-    private TextField userName;
-
-    String userNameText;
+@FMXL
+private TextField signatureInput
 
     @FXML
     void sendMessage() {
