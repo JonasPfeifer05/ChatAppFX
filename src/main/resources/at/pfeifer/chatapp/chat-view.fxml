@@ -7,15 +7,15 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 
-
 <AnchorPane fx:id="chatScene" prefHeight="500.0" prefWidth="720.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.pfeifer.chatapp.controller.ChatController">
    <children>
       <BorderPane prefHeight="500.0" prefWidth="720.0">
          <bottom>
             <HBox alignment="CENTER" prefHeight="75.0" prefWidth="720.0" spacing="20.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button fx:id="sendButton" mnemonicParsing="false" onAction="#sendMessage" prefHeight="25.0" prefWidth="54.0" text="send" />
-                  <TextField fx:id="messageInput" onAction="#sendMessage" prefHeight="25.0" prefWidth="587.0" promptText="Put message to send here: e.g. How are you?" />
+                  <Button fx:id="sendButton" mnemonicParsing="false" onAction="#sendMessage" prefHeight="25.0" prefWidth="48.0" text="send" />
+                  <TextField fx:id="messageInput" onAction="#sendMessage" prefHeight="25.0" prefWidth="446.0" promptText="Put message to send here: e.g. How are you?" />
+                  <TextField fx:id="signatureInput" layoutX="114.0" layoutY="35.0" prefHeight="25.0" prefWidth="160.0" promptText="Your signature like 'Pfeifer'" />
                </children>
             </HBox>
          </bottom>

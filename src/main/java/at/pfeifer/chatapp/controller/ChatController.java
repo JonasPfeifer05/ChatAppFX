@@ -7,8 +7,8 @@ import at.pfeifer.chatapp.services.exceptions.NotStartedException;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 
@@ -28,13 +28,19 @@ public class ChatController implements Initializable {
     private ListView<String> messages;
 
     @FXML
+    private TextField signatureInput;
+
+    @FXML
     void sendMessage() {
         String message = messageInput.getText();
+
         if (message.isEmpty()) return;
+        String messageWithSignature= combineMessageWithSignature(message, signatureInput.getText());
+
 
         try {
-            ClientService.sendMessage(message);
-            displayMessage(message);
+            ClientService.sendMessage(messageWithSignature);
+            displayMessage(messageWithSignature);
             messageInput.clear();
         } catch (NotStartedException e) {
             RoutingService.toModeSelectionScene(chatScene);
@@ -60,5 +66,13 @@ public class ChatController implements Initializable {
         } catch (NotStartedException e) {
             System.err.println("User wasn't started");
         }
+    }
+
+
+    public String combineMessageWithSignature(String message, String signature) {
+        if (signature.isEmpty()) {
+            return message;
+        }
+        return String.format("%s | %s", message, signature);
     }
 }
