@@ -1,15 +1,16 @@
-package at.pfeifer.chatapp.controller;
+package at.pfeifer.chatapp.services;
 
 import at.pfeifer.chatapp.backend.server.Server;
+import at.pfeifer.chatapp.services.exceptions.AlreadyStartedException;
 
 import java.io.IOException;
 import java.util.Optional;
 
 public class ServerService {
-    public static Optional<Server> server = Optional.empty();
+    private static Optional<Server> server = Optional.empty();
 
-    public static void startServer(int port) throws IOException {
-        if (server.isPresent()) throw new RuntimeException("Server was already started!");
+    public static void startServer(int port) throws IOException, AlreadyStartedException {
+        if (server.isPresent()) throw new AlreadyStartedException("Server was already started!");
 
         Server serverInstance = new Server(port);
         serverInstance.start();

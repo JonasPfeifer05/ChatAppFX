@@ -1,6 +1,10 @@
-package com.example.chatapp.controller;
+package at.pfeifer.chatapp.controller;
 
-import javafx.event.ActionEvent;
+import at.pfeifer.chatapp.services.ClientService;
+import at.pfeifer.chatapp.services.exceptions.AlreadyStartedException;
+import at.pfeifer.chatapp.services.exceptions.NotStartedException;
+import at.pfeifer.chatapp.services.exceptions.UndefinedClientException;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -8,10 +12,11 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ChatController {
+public class ChatController implements Initializable {
 
     @FXML
     private AnchorPane chatScene;
@@ -26,11 +31,37 @@ public class ChatController {
     private Button sendButton;
 
     @FXML
-    void sendMessage(ActionEvent event) {
+    void sendMessage() {
         String message = messageInput.getText();
         if (message.isEmpty()) return;
 
-        messages.getItems().add(message);
-        messages.scrollTo(messages.getItems().size());
+        try {
+            ClientService.sendMessage(message);
+            displayMessage(message);
+            messageInput.clear();
+        } catch (NotStartedException e) {
+            System.err.println("Cannot send message because the client wasn't started");
+            return;
+        } catch (IOException e) {
+            System.err.println("Couldn't send message: " + e.getMessage());
+            return;
+        }
+
+    }
+
+    private void displayMessage(String message) {
+        Platform.runLater(() -> {
+            messages.getItems().add(message);
+            messages.scrollTo(messages.getItems().size());
+        });
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        try {
+            ClientService.setConsumer(this::displayMessage);
+        } catch (NotStartedException e) {
+            System.err.println("User wasn't started");
+        }
     }
 }

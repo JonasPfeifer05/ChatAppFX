@@ -5,13 +5,13 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.function.Consumer;
 
-public class ClientInputHandler implements Runnable {
-    private final Consumer<String> consumer;
+public class ClientOutputHandler implements Runnable {
+    private Consumer<String> consumer;
     private final DataInputStream dataInputStream;
     private boolean read = true;
     private final Object hasStoppedLock = 0;
 
-    public ClientInputHandler(Consumer<String> consumer, DataInputStream dataInputStream) {
+    public ClientOutputHandler(Consumer<String> consumer, DataInputStream dataInputStream) {
         this.dataInputStream = dataInputStream;
         this.consumer = consumer;
     }
@@ -25,7 +25,8 @@ public class ClientInputHandler implements Runnable {
                 consumer.accept(input);
             } catch (SocketTimeoutException ignored) {
             } catch (IOException e) {
-                throw new IllegalArgumentException("Fatal error while retrieving data from server: " + e.getMessage());
+                System.err.println("Fatal error while retrieving data from server: " + e.getMessage());
+                break;
             }
         }
         System.out.println("Stopped listening for input");
@@ -43,5 +44,9 @@ public class ClientInputHandler implements Runnable {
                 System.err.println("Got interrupted while waiting for ClientAcceptor to stop!");
             }
         }
+    }
+
+    public void setConsumer(Consumer<String> consumer) {
+        this.consumer = consumer;
     }
 }

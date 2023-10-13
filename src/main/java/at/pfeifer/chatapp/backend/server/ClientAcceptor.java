@@ -1,4 +1,6 @@
-package at.pfeifer.chatapp.server;
+package at.pfeifer.chatapp.backend.server;
+
+import at.pfeifer.chatapp.backend.ChatLobby;
 
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -8,8 +10,11 @@ import java.net.SocketTimeoutException;
 public class ClientAcceptor implements Runnable {
     private final ServerSocket socket;
     private boolean accept = true;
+    private final Object hasStoppedNotifier = 0;
+    private final ChatLobby lobby;
 
-    public ClientAcceptor(ServerSocket socket) throws SocketException {
+    public ClientAcceptor(ServerSocket socket, ChatLobby lobby) throws SocketException {
+        this.lobby = lobby;
         socket.setSoTimeout(10);
         this.socket = socket;
     }
@@ -21,19 +26,25 @@ public class ClientAcceptor implements Runnable {
             try {
                 Socket client = socket.accept();
                 System.out.println(client);
+                new Thread(new ClientHandler(client, lobby)).start();
             } catch (SocketTimeoutException ignored) {
             } catch (Exception e) {
-                throw new RuntimeException("Fatal error while waiting for connections: " + e.getMessage());
+                System.err.println("Fatal error while waiting for connections: " + e.getMessage());
+                break;
             }
         }
-        this.notifyAll();
+        synchronized (hasStoppedNotifier) {
+            hasStoppedNotifier.notifyAll();
+        }
         System.out.println("Acceptor stopped listening for connections");
     }
 
     public void stop() {
         this.accept = false;
         try {
-            this.wait();
+            synchronized (hasStoppedNotifier) {
+                hasStoppedNotifier.wait();
+            }
         } catch (InterruptedException e) {
             System.err.println("Got interrupted while waiting for ClientAcceptor to stop!");
         }
