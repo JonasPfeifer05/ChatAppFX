@@ -1,9 +1,7 @@
 package at.pfeifer.chatapp.controller;
 
 import at.pfeifer.chatapp.services.ClientService;
-import at.pfeifer.chatapp.services.exceptions.AlreadyStartedException;
 import at.pfeifer.chatapp.services.exceptions.NotStartedException;
-import at.pfeifer.chatapp.services.exceptions.UndefinedClientException;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;

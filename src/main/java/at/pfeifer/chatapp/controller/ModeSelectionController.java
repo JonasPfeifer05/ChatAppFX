@@ -54,7 +54,7 @@ public class ModeSelectionController implements Initializable {
             if (hostSelector.isSelected()) {
                 int port = Integer.parseInt(userInput);
                 ServerService.startServer(port);
-                ClientService.defineClient("localhost", port);
+                ClientService.startClient("localhost", port);
             } else {
                 var parts = userInput.split(":");
                 if (parts.length != 2) {
@@ -62,7 +62,7 @@ public class ModeSelectionController implements Initializable {
                     return;
                 }
                 int port = Integer.parseInt(parts[1]);
-                ClientService.defineClient(parts[0], port);
+                ClientService.startClient(parts[0], port);
             }
         } catch (InvalidPortException e) {
             System.err.println("Invalid port was passed: " + e.getMessage());
