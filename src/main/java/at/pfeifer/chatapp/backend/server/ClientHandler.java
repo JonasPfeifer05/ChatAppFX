@@ -3,15 +3,16 @@ package at.pfeifer.chatapp.backend.server;
 import at.pfeifer.chatapp.backend.ChatLobby;
 
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.util.concurrent.TimeoutException;
 
 public class ClientHandler implements Runnable {
     private final Socket client;
     private final DataInputStream dataInputStream;
+    private final DataOutputStream dataOutputStream;
     private boolean handelInput = true;
     private final Object hasStoppedNotifier = 0;
     private final ChatLobby lobby;
@@ -19,34 +20,47 @@ public class ClientHandler implements Runnable {
     public ClientHandler(Socket client, ChatLobby lobby) throws IOException {
         this.lobby = lobby;
         this.client = client;
-        client.setSoTimeout(10);
+        client.setSoTimeout(100);
         dataInputStream = new DataInputStream(client.getInputStream());
+        dataOutputStream = new DataOutputStream(client.getOutputStream());
     }
 
     @Override
     public void run() {
-        lobby.join(client);
+        try {
+            client.setSoTimeout(1000);
+            String username = dataInputStream.readUTF();
+            if (lobby.usernameInUse(username)) {
+                dataOutputStream.writeBoolean(false);
+                client.close();
+                return;
+            }
+            dataOutputStream.writeBoolean(true);
+            client.setSoTimeout(100);
+            lobby.join(client, username);
+        } catch (IOException e) {
+            System.err.println("Failed to communicate with client");
+            try {
+                dataOutputStream.writeBoolean(false);
+                client.close();
+                return;
+            } catch (IOException ignored) {}
+        }
+
         System.out.println("Now listening for client input");
         while (handelInput) {
             try {
-                if (dataInputStream.available() == 0) {
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                    continue;
-                }
                 String input = dataInputStream.readUTF();
                 lobby.sendMessage(client, input);
                 System.out.println(input);
-            } catch (EOFException ignored) {
+            } catch (EOFException | SocketTimeoutException ignored) {
             } catch (IOException e) {
                 System.err.println("Fatal error while waiting for client input: " + e.getMessage());
                 break;
             }
         }
         lobby.leave(client);
+        handelInput = false;
         synchronized (hasStoppedNotifier) {
             hasStoppedNotifier.notifyAll();
         }
@@ -54,6 +68,7 @@ public class ClientHandler implements Runnable {
     }
 
     public void stop() throws IOException {
+        if (!handelInput) return;
         handelInput = false;
         try {
             synchronized (hasStoppedNotifier) {

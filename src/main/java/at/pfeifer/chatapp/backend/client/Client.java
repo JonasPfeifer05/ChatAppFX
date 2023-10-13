@@ -12,20 +12,22 @@ public class Client {
     private final ClientOutputHandler clientOutputHandler;
     private boolean alreadyStarted = false;
     private final DataOutputStream dataOutputStream;
+    private final DataInputStream dataInputStream;
 
     public Client(String ip, int port, Consumer<String> consumer) throws IOException {
         socket = new Socket(ip, port);
-        socket.setSoTimeout(10);
+        socket.setSoTimeout(100);
         DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
         clientOutputHandler = new ClientOutputHandler(consumer, dataInputStream);
         dataOutputStream = new DataOutputStream(socket.getOutputStream());
+        this.dataInputStream = new DataInputStream(socket.getInputStream());
     }
 
     public void sendMessage(String message) throws IOException {
         dataOutputStream.writeUTF(message);
     }
 
-    public void start() {
+    public void startListening() {
         if (alreadyStarted) throw new RuntimeException("Client already got started");
 
         System.out.println("Starting client");
@@ -41,7 +43,7 @@ public class Client {
 
     public static void main(String[] args) throws IOException {
         Client client = new Client("localhost", 8080, System.out::println);
-        client.start();
+        client.startListening();
 
         for (int i = 0; i < 5; i++) {
             new Scanner(System.in).nextLine();
@@ -53,5 +55,15 @@ public class Client {
 
     public void setConsumer(Consumer<String> consumer) {
         clientOutputHandler.setConsumer(consumer);
+    }
+
+// --Commented out by Inspection START (13.10.2023 18:59):
+//    public DataOutputStream getDataOutputStream() {
+//        return dataOutputStream;
+//    }
+// --Commented out by Inspection STOP (13.10.2023 18:59)
+
+    public DataInputStream getDataInputStream() {
+        return dataInputStream;
     }
 }

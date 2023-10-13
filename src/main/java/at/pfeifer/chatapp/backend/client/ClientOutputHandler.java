@@ -29,14 +29,16 @@ public class ClientOutputHandler implements Runnable {
                 break;
             }
         }
-        System.out.println("Stopped listening for input");
+        read = false;
         synchronized (hasStoppedLock) {
             hasStoppedLock.notifyAll();
         }
+        System.out.println("Stopped listening for input");
     }
 
     public void stop() {
-        this.read = false;
+        if (!read) return;
+        read = false;
         synchronized (hasStoppedLock) {
             try {
                 hasStoppedLock.wait();

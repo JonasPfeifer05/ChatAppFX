@@ -20,7 +20,7 @@ public class ClientAcceptor implements Runnable {
     public ClientAcceptor(ServerSocket socket, ChatLobby lobby) throws SocketException {
         handlers = new ArrayList<>();
         this.lobby = lobby;
-        socket.setSoTimeout(10);
+        socket.setSoTimeout(100);
         this.socket = socket;
     }
 
@@ -30,7 +30,6 @@ public class ClientAcceptor implements Runnable {
         while (accept) {
             try {
                 Socket client = socket.accept();
-                if (client == null) continue;
 
                 handlers = new ArrayList<>(handlers.stream()
                         .filter(clientHandler -> !clientHandler.isClosed())
@@ -45,6 +44,7 @@ public class ClientAcceptor implements Runnable {
                 break;
             }
         }
+        accept = false;
         synchronized (hasStoppedNotifier) {
             hasStoppedNotifier.notifyAll();
         }
@@ -52,7 +52,8 @@ public class ClientAcceptor implements Runnable {
     }
 
     public void stop() {
-        this.accept = false;
+        if (!accept) return;
+        accept = false;
         try {
             synchronized (hasStoppedNotifier) {
                 hasStoppedNotifier.wait();

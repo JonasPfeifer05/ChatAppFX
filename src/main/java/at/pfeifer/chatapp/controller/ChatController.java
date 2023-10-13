@@ -39,10 +39,8 @@ public class ChatController implements Initializable {
             messageInput.clear();
         } catch (NotStartedException e) {
             System.err.println("Cannot send message because the client wasn't started");
-            return;
         } catch (IOException e) {
             System.err.println("Couldn't send message: " + e.getMessage());
-            return;
         }
 
     }

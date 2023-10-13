@@ -5,6 +5,7 @@ import at.pfeifer.chatapp.services.ClientService;
 import at.pfeifer.chatapp.services.ServerService;
 import at.pfeifer.chatapp.services.exceptions.AlreadyStartedException;
 import at.pfeifer.chatapp.services.exceptions.InvalidPortException;
+import at.pfeifer.chatapp.services.exceptions.UsernameDeclinedException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -44,17 +45,23 @@ public class ModeSelectionController implements Initializable {
 
     @FXML
     private TextField userInput;
+    @FXML
+    private TextField usernameInput;
 
     @FXML
     void performAction() {
         String userInput = this.userInput.getText();
-        if (userInput.isEmpty()) return;
+        String username = this.usernameInput.getText();
+        if (userInput.isEmpty() || username.isEmpty()) {
+            System.err.println("No data or username provided");
+            return;
+        }
 
         try {
             if (hostSelector.isSelected()) {
                 int port = Integer.parseInt(userInput);
                 ServerService.startServer(port);
-                ClientService.startClient("localhost", port);
+                ClientService.startClient("localhost", port, username);
             } else {
                 var parts = userInput.split(":");
                 if (parts.length != 2) {
@@ -62,8 +69,11 @@ public class ModeSelectionController implements Initializable {
                     return;
                 }
                 int port = Integer.parseInt(parts[1]);
-                ClientService.startClient(parts[0], port);
+                ClientService.startClient(parts[0], port, username);
             }
+        } catch (UsernameDeclinedException e) {
+            System.err.println("Username was declined: " + e.getMessage());
+            return;
         } catch (InvalidPortException e) {
             System.err.println("Invalid port was passed: " + e.getMessage());
             return;

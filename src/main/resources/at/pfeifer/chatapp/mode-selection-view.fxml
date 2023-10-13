@@ -22,9 +22,22 @@
                         <RadioButton fx:id="joinSelector" mnemonicParsing="false" text="Join" toggleGroup="$mode" />
                     </children>
                 </HBox>
-                <HBox alignment="CENTER" prefHeight="71.0" prefWidth="300.0">
+                <HBox alignment="CENTER" prefHeight="131.0" prefWidth="300.0">
                     <children>
-                        <TextField fx:id="userInput" onAction="#performAction" prefHeight="34.0" prefWidth="275.0" promptText="Input port to host on: e.g. 8080" />
+                  <VBox prefHeight="61.0" prefWidth="395.0">
+                     <children>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                           <children>
+                                    <TextField fx:id="userInput" onAction="#performAction" prefHeight="34.0" prefWidth="275.0" promptText="Input port to host on: e.g. 8080" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                           <children>
+                              <TextField fx:id="usernameInput" onAction="#performAction" prefHeight="34.0" prefWidth="275.0" promptText="Your username:" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
                     </children>
                 </HBox>
                 <HBox alignment="CENTER" prefHeight="77.0" prefWidth="300.0">
