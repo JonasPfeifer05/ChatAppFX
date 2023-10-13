@@ -1,4 +1,4 @@
-module com.example.chatapp {
+module at.pfeifer.chatapp {
     requires javafx.controls;
     requires javafx.fxml;
 
@@ -9,4 +9,6 @@ module com.example.chatapp {
     opens at.pfeifer.chatapp.controller to javafx.fxml;
     exports at.pfeifer.chatapp.services;
     opens at.pfeifer.chatapp.services to javafx.fxml;
+
+
 }
