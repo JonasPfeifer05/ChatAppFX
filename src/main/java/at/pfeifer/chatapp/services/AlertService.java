@@ -6,6 +6,7 @@ public class AlertService {
     public static void showAlert(Alert.AlertType type, String message) {
         Alert alert = new Alert(type);
         alert.setContentText(message);
+        alert.setResizable(true);
         alert.show();
     }
 }

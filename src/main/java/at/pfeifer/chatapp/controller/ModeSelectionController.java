@@ -1,23 +1,19 @@
 package at.pfeifer.chatapp.controller;
 
-import at.pfeifer.chatapp.App;
 import at.pfeifer.chatapp.services.AlertService;
 import at.pfeifer.chatapp.services.ClientService;
+import at.pfeifer.chatapp.services.RoutingService;
 import at.pfeifer.chatapp.services.ServerService;
 import at.pfeifer.chatapp.services.exceptions.AlreadyStartedException;
 import at.pfeifer.chatapp.services.exceptions.InvalidPortException;
 import at.pfeifer.chatapp.services.exceptions.UsernameDeclinedException;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.security.AllPermission;
 import java.util.ResourceBundle;
 
 public class ModeSelectionController implements Initializable {
@@ -36,11 +32,6 @@ public class ModeSelectionController implements Initializable {
 
     @FXML
     private RadioButton hostSelector;
-    @FXML
-    private RadioButton joinSelector;
-
-    @FXML
-    private ToggleGroup mode;
 
     @FXML
     private TextField userInput;
@@ -72,6 +63,9 @@ public class ModeSelectionController implements Initializable {
                 int port = Integer.parseInt(parts[1]);
                 ClientService.startClient(parts[0], port, username);
             }
+        } catch (NumberFormatException e) {
+            AlertService.showAlert(Alert.AlertType.WARNING, "Address with invalid port was passed!");
+            return;
         } catch (UsernameDeclinedException e) {
             AlertService.showAlert(Alert.AlertType.WARNING, "Username is already in use!");
             return;
@@ -84,19 +78,11 @@ public class ModeSelectionController implements Initializable {
         } catch (IOException e) {
             ServerService.stopServerIfPresent();
             ClientService.stopClientIfPresent();
-            AlertService.showAlert(Alert.AlertType.ERROR, "FATAL ERROR: " + e.getMessage());
+            AlertService.showAlert(Alert.AlertType.ERROR, "FATAL ERROR: " + e);
             return;
         }
 
-        Stage stage = (Stage) modeSelectionScene.getScene().getWindow();
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("chat-view.fxml"));
-        try {
-            Scene scene = new Scene(fxmlLoader.load(), 720, 500);
-            stage.hide();
-            stage.setScene(scene);
-            stage.centerOnScreen();
-            stage.show();
-        } catch (IOException ignored) {}
+        RoutingService.toChatScene(modeSelectionScene);
     }
 
     @Override

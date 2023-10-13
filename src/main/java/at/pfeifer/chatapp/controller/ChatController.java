@@ -1,11 +1,13 @@
 package at.pfeifer.chatapp.controller;
 
+import at.pfeifer.chatapp.services.AlertService;
 import at.pfeifer.chatapp.services.ClientService;
+import at.pfeifer.chatapp.services.RoutingService;
 import at.pfeifer.chatapp.services.exceptions.NotStartedException;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
@@ -26,9 +28,6 @@ public class ChatController implements Initializable {
     private ListView<String> messages;
 
     @FXML
-    private Button sendButton;
-
-    @FXML
     void sendMessage() {
         String message = messageInput.getText();
         if (message.isEmpty()) return;
@@ -38,9 +37,11 @@ public class ChatController implements Initializable {
             displayMessage(message);
             messageInput.clear();
         } catch (NotStartedException e) {
-            System.err.println("Cannot send message because the client wasn't started");
+            RoutingService.toModeSelectionScene(chatScene);
+            AlertService.showAlert(Alert.AlertType.ERROR, "Redirecting to the connection screen because no user is started!");
         } catch (IOException e) {
-            System.err.println("Couldn't send message: " + e.getMessage());
+            RoutingService.toModeSelectionScene(chatScene);
+            AlertService.showAlert(Alert.AlertType.ERROR, "FATAL ERROR (Redirecting to connect screen): " + e);
         }
 
     }
