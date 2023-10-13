@@ -13,9 +13,9 @@
          <bottom>
             <HBox alignment="CENTER" prefHeight="75.0" prefWidth="720.0" spacing="20.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button fx:id="sendButton" mnemonicParsing="false" onAction="#sendMessage" prefHeight="25.0" prefWidth="37.0" text="send" />
-                  <TextField fx:id="messageInput" onAction="#sendMessage" prefHeight="25.0" prefWidth="481.0" promptText="Put message to send here: e.g. How are you?" />
-                  <TextField fx:id="signatureInput" layoutX="114.0" layoutY="35.0" prefHeight="25.0" prefWidth="137.0" promptText="Your signature like 'Pfeifer Jonas'" />
+                  <Button fx:id="sendButton" mnemonicParsing="false" onAction="#sendMessage" prefHeight="25.0" prefWidth="48.0" text="send" />
+                  <TextField fx:id="messageInput" onAction="#sendMessage" prefHeight="25.0" prefWidth="446.0" promptText="Put message to send here: e.g. How are you?" />
+                  <TextField fx:id="signatureInput" layoutX="114.0" layoutY="35.0" prefHeight="25.0" prefWidth="160.0" promptText="Your signature like 'Pfeifer'" />
                </children>
             </HBox>
          </bottom>
