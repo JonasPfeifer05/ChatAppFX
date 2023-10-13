@@ -42,8 +42,8 @@ private TextField signatureInput
         
 
         try {
-            ClientService.sendMessage(messageWithUserName);
-            displayMessage(messageWithUserName);
+            ClientService.sendMessage(messageWithSignature);
+            displayMessage(messageWithSignature);
             messageInput.clear();
         } catch (NotStartedException e) {
             System.err.println("Cannot send message because the client wasn't started");
