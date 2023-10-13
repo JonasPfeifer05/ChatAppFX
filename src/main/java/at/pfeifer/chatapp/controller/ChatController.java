@@ -38,7 +38,8 @@ private TextField signatureInput
         String message = messageInput.getText();
 
         if (message.isEmpty()) return;
-        String messageWithUserName = combineUserNameWithMessage(message, userNameText);
+        String messageWithSignature= combineUserNameWithMessage(message, signatureInput.getText());
+        
 
         try {
             ClientService.sendMessage(messageWithUserName);
