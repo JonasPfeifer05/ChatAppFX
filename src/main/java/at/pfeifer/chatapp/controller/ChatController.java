@@ -72,10 +72,6 @@ public class ChatController implements Initializable {
         }
     }
 
-    @FXML
-    void setUserName() {
-        userNameText = userName.getText();
-    }
 
     public String combineUserNameWithMessage(String message, String userName){
         if (userName.isEmpty() || userName == null){
