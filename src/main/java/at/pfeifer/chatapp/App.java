@@ -1,5 +1,7 @@
 package at.pfeifer.chatapp;
 
+import at.pfeifer.chatapp.services.ClientService;
+import at.pfeifer.chatapp.services.ServerService;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -13,8 +15,12 @@ public class App extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("mode-selection-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 300, 200);
+        stage.setOnCloseRequest(windowEvent -> {
+            ClientService.stopClientIfPresent();
+            ServerService.stopServerIfPresent();
+            stage.close();
+        });
         stage.setTitle("Chat App");
-        stage.setOnCloseRequest((windowEvent) -> Platform.exit());
         stage.setScene(scene);
         stage.show();
     }

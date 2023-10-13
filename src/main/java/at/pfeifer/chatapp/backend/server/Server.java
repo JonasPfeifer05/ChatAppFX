@@ -9,11 +9,10 @@ import java.util.Scanner;
 public class Server {
     private final ServerSocket socket;
     private final ClientAcceptor clientAcceptor;
-    private final ChatLobby lobby;
     private boolean alreadyStarted = false;
 
     public Server(int port) throws IOException {
-        lobby = new ChatLobby();
+        ChatLobby lobby = new ChatLobby();
 
         socket = new ServerSocket(port);
         System.out.println("Created server socket");
@@ -26,7 +25,8 @@ public class Server {
         if (alreadyStarted) throw new RuntimeException("Server already got started");
 
         System.out.println("Starting server on port: " + socket.getLocalPort());
-        new Thread(clientAcceptor).start();
+        var thread = new Thread(clientAcceptor);
+        thread.start();
         alreadyStarted = true;
     }
 
@@ -35,7 +35,7 @@ public class Server {
         socket.close();
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException {
         Server server = new Server(8080);
         server.start();
 
