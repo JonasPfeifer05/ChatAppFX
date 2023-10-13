@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane fx:id="modeSelectionScene" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chatapp.controller.ModeSelectionController">
+    <children>
+        <VBox prefHeight="200.0" prefWidth="300.0">
+            <children>
+                <HBox alignment="CENTER" prefHeight="84.0" prefWidth="300.0" spacing="20.0">
+                    <children>
+                        <RadioButton fx:id="hostSelector" mnemonicParsing="false" selected="true" text="Host">
+                            <toggleGroup>
+                                <ToggleGroup fx:id="mode" />
+                            </toggleGroup>
+                        </RadioButton>
+                        <RadioButton fx:id="joinSelector" mnemonicParsing="false" text="Join" toggleGroup="$mode" />
+                    </children>
+                </HBox>
+                <HBox alignment="CENTER" prefHeight="71.0" prefWidth="300.0">
+                    <children>
+                        <TextField fx:id="userInput" onAction="#performAction" prefHeight="34.0" prefWidth="275.0" promptText="Input port to host on: e.g. 8080" />
+                    </children>
+                </HBox>
+                <HBox alignment="CENTER" prefHeight="77.0" prefWidth="300.0">
+                    <children>
+                        <Button fx:id="actionButton" mnemonicParsing="false" onAction="#performAction" prefHeight="25.0" prefWidth="133.0" text="Host a lobby" />
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>
