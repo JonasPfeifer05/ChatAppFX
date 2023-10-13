@@ -28,8 +28,8 @@ public class ChatController implements Initializable {
     @FXML
     private Button sendButton;
 
-@FMXL
-private TextField signatureInput
+@FXML
+private TextField signatureInput;
 
     @FXML
     void sendMessage() {
@@ -37,7 +37,7 @@ private TextField signatureInput
 
         if (message.isEmpty()) return;
         String messageWithSignature= combineUserNameWithMessage(message, signatureInput.getText());
-        
+
 
         try {
             ClientService.sendMessage(messageWithSignature);
@@ -70,11 +70,10 @@ private TextField signatureInput
     }
 
 
-    public String combineUserNameWithMessage(String message, String userName){
-        if (userName.isEmpty() || userName == null){
-            return "[]- " + message;
-        }else {
-            return String.format("[%s]- %s", userName, message);
+    public String combineUserNameWithMessage(String message, String signature){
+        if (signature.isEmpty()){
+            return message;
         }
+        return String.format("%s | %s", message, signature);
     }
 }
