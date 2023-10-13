@@ -44,7 +44,8 @@ public class ClientHandler implements Runnable {
                 dataOutputStream.writeBoolean(false);
                 client.close();
                 return;
-            } catch (IOException ignored) {}
+            } catch (IOException ignored) {
+            }
         }
 
         System.out.println("Now listening for client input");
@@ -53,7 +54,10 @@ public class ClientHandler implements Runnable {
                 String input = dataInputStream.readUTF();
                 lobby.sendMessage(client, input);
                 System.out.println(input);
-            } catch (EOFException | SocketTimeoutException ignored) {
+            } catch (EOFException e) {
+                System.err.println("Can no longer read data from client: " + e.getMessage());
+                break;
+            } catch (SocketTimeoutException ignored) {
             } catch (IOException e) {
                 System.err.println("Fatal error while waiting for client input: " + e.getMessage());
                 break;
