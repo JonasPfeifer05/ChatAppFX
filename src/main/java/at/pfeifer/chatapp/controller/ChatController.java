@@ -28,14 +28,20 @@ public class ChatController implements Initializable {
     @FXML
     private Button sendButton;
 
+@FXML
+private TextField signatureInput;
+
     @FXML
     void sendMessage() {
         String message = messageInput.getText();
+
         if (message.isEmpty()) return;
+        String messageWithSignature= combineMessageWithSignature(message, signatureInput.getText());
+
 
         try {
-            ClientService.sendMessage(message);
-            displayMessage(message);
+            ClientService.sendMessage(messageWithSignature);
+            displayMessage(messageWithSignature);
             messageInput.clear();
         } catch (NotStartedException e) {
             System.err.println("Cannot send message because the client wasn't started");
@@ -59,5 +65,13 @@ public class ChatController implements Initializable {
         } catch (NotStartedException e) {
             System.err.println("User wasn't started");
         }
+    }
+
+
+    public String combineMessageWithSignature(String message, String signature){
+        if (signature.isEmpty()){
+            return message;
+        }
+        return String.format("%s | %s", message, signature);
     }
 }
