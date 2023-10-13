@@ -43,6 +43,7 @@ public class ClientService {
         if (client != null) {
             try {
                 client.stop();
+                client = null;
             } catch (IOException e) {
                 System.err.println("Fatal error encountered while stopping client");
             }

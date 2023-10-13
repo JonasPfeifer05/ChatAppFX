@@ -1,6 +1,7 @@
 package at.pfeifer.chatapp.controller;
 
 import at.pfeifer.chatapp.App;
+import at.pfeifer.chatapp.services.AlertService;
 import at.pfeifer.chatapp.services.ClientService;
 import at.pfeifer.chatapp.services.ServerService;
 import at.pfeifer.chatapp.services.exceptions.AlreadyStartedException;
@@ -10,15 +11,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.security.AllPermission;
 import java.util.ResourceBundle;
 
 public class ModeSelectionController implements Initializable {
@@ -53,7 +52,9 @@ public class ModeSelectionController implements Initializable {
         String userInput = this.userInput.getText();
         String username = this.usernameInput.getText();
         if (userInput.isEmpty() || username.isEmpty()) {
-            System.err.println("No data or username provided");
+            if (username.isEmpty()) AlertService.showAlert(Alert.AlertType.WARNING, "No username passed!");
+            else if (hostSelector.isSelected()) AlertService.showAlert(Alert.AlertType.WARNING, "No port specified!");
+            else AlertService.showAlert(Alert.AlertType.WARNING, "No address specified!");
             return;
         }
 
@@ -65,23 +66,25 @@ public class ModeSelectionController implements Initializable {
             } else {
                 var parts = userInput.split(":");
                 if (parts.length != 2) {
-                    System.out.println("Invalid address passed");
+                    AlertService.showAlert(Alert.AlertType.WARNING, "Wrongly formatted address passed!");
                     return;
                 }
                 int port = Integer.parseInt(parts[1]);
                 ClientService.startClient(parts[0], port, username);
             }
         } catch (UsernameDeclinedException e) {
-            System.err.println("Username was declined: " + e.getMessage());
+            AlertService.showAlert(Alert.AlertType.WARNING, "Username is already in use!");
             return;
         } catch (InvalidPortException e) {
-            System.err.println("Invalid port was passed: " + e.getMessage());
+            AlertService.showAlert(Alert.AlertType.WARNING, "Invalid port passed!");
             return;
         } catch (AlreadyStartedException e) {
-            System.err.println("Couldn't start because it already was started: " + e.getMessage());
+            AlertService.showAlert(Alert.AlertType.WARNING, "Couldn't start because client or server was already started!");
             return;
         } catch (IOException e) {
-            System.err.println("Error while starting: " + e.getMessage());
+            ServerService.stopServerIfPresent();
+            ClientService.stopClientIfPresent();
+            AlertService.showAlert(Alert.AlertType.ERROR, "FATAL ERROR: " + e.getMessage());
             return;
         }
 
