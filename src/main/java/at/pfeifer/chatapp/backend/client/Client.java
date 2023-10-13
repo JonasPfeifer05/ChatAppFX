@@ -31,6 +31,7 @@ public class Client {
         if (alreadyStarted) throw new RuntimeException("Client already got started");
 
         System.out.println("Starting client");
+
         var thread = new Thread(clientOutputHandler);
         thread.start();
         alreadyStarted = true;
