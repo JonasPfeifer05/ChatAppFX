@@ -36,7 +36,7 @@ private TextField signatureInput;
         String message = messageInput.getText();
 
         if (message.isEmpty()) return;
-        String messageWithSignature= combineUserNameWithMessage(message, signatureInput.getText());
+        String messageWithSignature= combineMessageWithSignature(message, signatureInput.getText());
 
 
         try {
@@ -70,7 +70,7 @@ private TextField signatureInput;
     }
 
 
-    public String combineUserNameWithMessage(String message, String signature){
+    public String combineMessageWithSignature(String message, String signature){
         if (signature.isEmpty()){
             return message;
         }
