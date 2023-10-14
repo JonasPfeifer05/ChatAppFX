@@ -28,9 +28,13 @@ public class ChatLobby {
             if (socket.isClosed()) clients.remove(socket);
         }
 
+        sendToAllExcept(from, name + " " + message);
+    }
+
+    private void sendToAllExcept(Socket except, String message) {
         clients.keySet().stream()
-                .filter(socket -> !socket.equals(from))
-                .forEach(socket -> writeMessageToSocket(socket, name + " " + message));
+                .filter(socket -> !socket.equals(except))
+                .forEach(socket -> writeMessageToSocket(socket, message));
     }
 
     private static void writeMessageToSocket(Socket socket, String message) {
