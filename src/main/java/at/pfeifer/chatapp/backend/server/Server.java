@@ -10,9 +10,10 @@ public class Server {
     private final ServerSocket socket;
     private final ClientAcceptor clientAcceptor;
     private boolean alreadyStarted = false;
+    private ChatLobby lobby;
 
     public Server(int port) throws IOException {
-        ChatLobby lobby = new ChatLobby();
+        lobby = new ChatLobby();
 
         socket = new ServerSocket(port);
         System.out.println("Created server socket");
@@ -31,6 +32,7 @@ public class Server {
     }
 
     public void stop() throws IOException {
+        lobby.sendToEveryone("Server shut down!");
         clientAcceptor.stop();
         socket.close();
     }

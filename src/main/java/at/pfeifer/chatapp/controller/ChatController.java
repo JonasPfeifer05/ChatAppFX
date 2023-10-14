@@ -39,7 +39,7 @@ public class ChatController implements Initializable {
 
         try {
             ClientService.sendMessage(messageWithSignature);
-            displayMessage(messageWithSignature);
+            displayMessage("You: " + messageWithSignature);
             messageInput.clear();
         } catch (NotStartedException e) {
             RoutingService.toModeSelectionScene(chatScene);

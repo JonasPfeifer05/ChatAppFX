@@ -52,7 +52,7 @@ public class ClientHandler implements Runnable {
         while (handelInput) {
             try {
                 String input = dataInputStream.readUTF();
-                lobby.sendMessage(client, input);
+                lobby.sendMessageFrom(client, input);
                 System.out.println(input);
             } catch (EOFException e) {
                 System.err.println("Can no longer read data from client: " + e.getMessage());

@@ -14,14 +14,18 @@ public class ChatLobby {
     }
 
     public synchronized void join(Socket socket, String username) {
+        sendToEveryone(username + " joined the lobby!");
         clients.put(socket, username);
     }
 
     public synchronized void leave(Socket socket) {
+        String username = clients.get(socket);
+        if (username == null) return;
         clients.remove(socket);
+        sendToEveryone(username + " left the lobby!");
     }
 
-    public synchronized void sendMessage(Socket from, String message) {
+    public synchronized void sendMessageFrom(Socket from, String message) {
         String name = clients.get(from) + ":";
 
         for (Socket socket : clients.keySet()) {
@@ -31,7 +35,7 @@ public class ChatLobby {
         sendToAllExcept(from, name + " " + message);
     }
 
-    private void sendToEveryone(String message) {
+    public void sendToEveryone(String message) {
         clients.keySet()
                 .forEach(socket -> writeMessageToSocket(socket, message));
     }
