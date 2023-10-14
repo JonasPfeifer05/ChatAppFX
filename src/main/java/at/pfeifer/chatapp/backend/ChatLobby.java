@@ -31,6 +31,11 @@ public class ChatLobby {
         sendToAllExcept(from, name + " " + message);
     }
 
+    private void sendToEveryone(String message) {
+        clients.keySet()
+                .forEach(socket -> writeMessageToSocket(socket, message));
+    }
+
     private void sendToAllExcept(Socket except, String message) {
         clients.keySet().stream()
                 .filter(socket -> !socket.equals(except))
