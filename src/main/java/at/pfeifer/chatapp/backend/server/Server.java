@@ -10,7 +10,7 @@ public class Server {
     private final ServerSocket socket;
     private final ClientAcceptor clientAcceptor;
     private boolean alreadyStarted = false;
-    private ChatLobby lobby;
+    private final ChatLobby lobby;
 
     public Server(int port) throws IOException {
         lobby = new ChatLobby();
