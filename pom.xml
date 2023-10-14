@@ -57,7 +57,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>at.pfeifer.chatapp.Main</mainClass>
+                            <mainClass>at.pfeifer.chatapp.MainFull</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

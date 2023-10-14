@@ -3,7 +3,7 @@ package at.pfeifer.chatapp;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Main {
+public class MainFull {
     public static void main(String[] argsArray) {
         List<String> args = new ArrayList<>(List.of(argsArray));
 
@@ -24,7 +24,11 @@ public class Main {
         }
 
         if (noGui) {
-
+            try {
+                CLI.run();
+            } catch (Exception e) {
+                System.err.println("Error while running the cli: " + e);
+            }
         } else {
             App.main(argsArray);
         }
