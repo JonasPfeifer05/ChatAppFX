@@ -5,12 +5,19 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class ChatLobby {
     private final Map<Socket, String> clients;
+    private final String password;
 
-    public ChatLobby() {
+    public ChatLobby(String password) {
         clients = new HashMap<>();
+        this.password = Objects.requireNonNullElse(password, "");
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public synchronized void join(Socket socket, String username) {
@@ -35,12 +42,12 @@ public class ChatLobby {
         sendToAllExcept(from, name + " " + message);
     }
 
-    public void sendToEveryone(String message) {
+    public synchronized void sendToEveryone(String message) {
         clients.keySet()
                 .forEach(socket -> writeMessageToSocket(socket, message));
     }
 
-    private void sendToAllExcept(Socket except, String message) {
+    private synchronized void sendToAllExcept(Socket except, String message) {
         clients.keySet().stream()
                 .filter(socket -> !socket.equals(except))
                 .forEach(socket -> writeMessageToSocket(socket, message));

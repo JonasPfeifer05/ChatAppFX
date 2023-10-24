@@ -10,5 +10,5 @@ module at.pfeifer.chatapp {
     exports at.pfeifer.chatapp.services;
     opens at.pfeifer.chatapp.services to javafx.fxml;
 
-
+    exports at.pfeifer.chatapp.services.exceptions;
 }
