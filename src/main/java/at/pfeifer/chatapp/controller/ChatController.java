@@ -30,6 +30,9 @@ public class ChatController implements Initializable {
     private AnchorPane chatScene;
 
     @FXML
+    private Button saveButton;
+
+    @FXML
     private Button sendButton;
 
     @FXML
