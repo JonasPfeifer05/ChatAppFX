@@ -1,33 +1,43 @@
 package at.pfeifer.chatapp.services;
 
 import at.pfeifer.chatapp.backend.client.Client;
-import at.pfeifer.chatapp.services.exceptions.AlreadyStartedException;
-import at.pfeifer.chatapp.services.exceptions.InvalidPortException;
-import at.pfeifer.chatapp.services.exceptions.NotStartedException;
-import at.pfeifer.chatapp.services.exceptions.UsernameDeclinedException;
+import at.pfeifer.chatapp.services.exceptions.*;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.function.Consumer;
 
 public class ClientService {
     private static Client client = null;
     private static boolean wasStarted = false;
 
-    public static void startClient(String ip, int port, String username) throws InvalidPortException, IOException, AlreadyStartedException, UsernameDeclinedException {
+    public static void startClient(String ip, int port, String password, String username) throws InvalidPortException, IOException, AlreadyStartedException, UsernameDeclinedException, WrongPasswordException {
         if (wasStarted) throw new AlreadyStartedException("Client already got started");
         if (port < 0) throw new InvalidPortException("Invalid port passed");
         Client clientInstance = new Client(ip, port, (ignored) -> {
         });
-        clientInstance.sendMessage(username);
         try {
+            String token = clientInstance.getDataInputStream().readUTF();
+            MessageDigest md = MessageDigest.getInstance("SHA-512");
+            md.update(password.getBytes());
+            String hash = new String(md.digest(token.getBytes()));
+            clientInstance.sendMessage(hash);
             boolean succeeded = clientInstance.getDataInputStream().readBoolean();
+            if (!succeeded) {
+                throw new WrongPasswordException("Wrong password provided");
+            }
+            clientInstance.sendMessage(username);
+            succeeded = clientInstance.getDataInputStream().readBoolean();
             if (!succeeded) {
                 throw new UsernameDeclinedException("Server declined the username");
             }
         } catch (SocketTimeoutException ignored) {
             System.err.println("Server took to long to respond");
             return;
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
         }
         clientInstance.startListening();
         client = clientInstance;

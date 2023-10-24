@@ -24,7 +24,9 @@ public class CLI {
             String portString = reader.readLine();
             try {
                 port = Integer.parseInt(portString);
-                ServerService.startServer(port);
+                System.out.print("Enter password for the lobby (or empty): ");
+                String password = reader.readLine();
+                ServerService.startServer(port, password);
                 break;
             } catch (NumberFormatException | InvalidPortException e) {
                 System.err.print("Invalid port! Try again: ");

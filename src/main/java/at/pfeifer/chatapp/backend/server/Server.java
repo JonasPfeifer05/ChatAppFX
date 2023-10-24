@@ -12,8 +12,8 @@ public class Server {
     private boolean alreadyStarted = false;
     private final ChatLobby lobby;
 
-    public Server(int port) throws IOException {
-        lobby = new ChatLobby();
+    public Server(int port, String password) throws IOException {
+        lobby = new ChatLobby(password);
 
         socket = new ServerSocket(port);
         System.out.println("Created server socket");
@@ -35,14 +35,5 @@ public class Server {
         lobby.sendToEveryone("Server shut down!");
         clientAcceptor.stop();
         socket.close();
-    }
-
-    public static void main(String[] args) throws IOException {
-        Server server = new Server(8080);
-        server.start();
-
-        new Scanner(System.in).nextLine();
-
-        server.stop();
     }
 }

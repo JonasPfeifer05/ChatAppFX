@@ -9,11 +9,11 @@ import java.io.IOException;
 public class ServerService {
     private static Server server = null;
 
-    public static void startServer(int port) throws IOException, AlreadyStartedException, InvalidPortException {
+    public static void startServer(int port, String password) throws IOException, AlreadyStartedException, InvalidPortException {
         if (server != null) throw new AlreadyStartedException("Server was already started!");
         if (port < 0) throw new InvalidPortException("Invalid port passed!");
 
-        Server serverInstance = new Server(port);
+        Server serverInstance = new Server(port, password);
         serverInstance.start();
 
         server = serverInstance;

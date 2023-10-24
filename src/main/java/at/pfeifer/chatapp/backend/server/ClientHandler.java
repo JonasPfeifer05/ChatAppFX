@@ -8,6 +8,9 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Random;
 
 public class ClientHandler implements Runnable {
     private final Socket client;
@@ -29,9 +32,27 @@ public class ClientHandler implements Runnable {
     public void run() {
         try {
             client.setSoTimeout(1000);
+            byte[] randomBytes = new byte[20];
+            new Random().nextBytes(randomBytes);
+            String randomString = new String(randomBytes);
+
+            dataOutputStream.writeUTF(randomString);
+            String passwordHash = dataInputStream.readUTF();
+            MessageDigest md = MessageDigest.getInstance("SHA-512");
+            md.update(lobby.getPassword().getBytes());
+            String correctHash = new String(md.digest(randomString.getBytes()));
+            if (!passwordHash.equals(correctHash)) {
+                System.out.println("Invalid password passed");
+                handelInput = false;
+                dataOutputStream.writeBoolean(false);
+                return;
+            }
+            dataOutputStream.writeBoolean(true);
+
             String username = dataInputStream.readUTF();
             if (lobby.usernameInUse(username)) {
                 dataOutputStream.writeBoolean(false);
+                handelInput = false;
                 client.close();
                 return;
             }
@@ -46,6 +67,8 @@ public class ClientHandler implements Runnable {
                 return;
             } catch (IOException ignored) {
             }
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
         }
 
         System.out.println("Now listening for client input");
