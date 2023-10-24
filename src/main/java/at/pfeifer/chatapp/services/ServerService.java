@@ -13,7 +13,7 @@ public class ServerService {
         if (server != null) throw new AlreadyStartedException("Server was already started!");
         if (port < 0) throw new InvalidPortException("Invalid port passed!");
 
-        Server serverInstance = new Server(port, password);
+        Server serverInstance = new Server(port, HashingService.hash(password.getBytes()));
         serverInstance.start();
 
         server = serverInstance;
