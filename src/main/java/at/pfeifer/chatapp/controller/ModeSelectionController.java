@@ -9,6 +9,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
@@ -24,6 +27,25 @@ public class ModeSelectionController implements Initializable {
 
     @FXML
     private AnchorPane modeSelectionScene;
+
+    @FXML
+    private HBox modeSelectorBox;
+
+    @FXML
+    private VBox sceneContent;
+
+    @FXML
+    private HBox inputHBox;
+
+    @FXML
+    private VBox inputList;
+
+    @FXML
+    private HBox dataInputBox;
+    @FXML
+    private HBox usernameInputBox;
+    @FXML
+    private HBox passwordInputBox;
 
     @FXML
     private Button actionButton;
@@ -86,7 +108,7 @@ public class ModeSelectionController implements Initializable {
             return;
         }
 
-        RoutingService.toChatScene(modeSelectionScene);
+        RoutingService.toChatScene((Stage) modeSelectionScene.getScene().getWindow());
     }
 
     @Override
@@ -102,5 +124,20 @@ public class ModeSelectionController implements Initializable {
         });
 
         hostSelector.setSelected(true);
+
+        sceneContent.minWidthProperty().bind(modeSelectionScene.widthProperty());
+        sceneContent.minHeightProperty().bind(modeSelectionScene.heightProperty());
+
+        inputHBox.minWidthProperty().bind(sceneContent.widthProperty());
+
+        inputList.minWidthProperty().bind(inputHBox.widthProperty());
+
+        dataInputBox.minWidthProperty().bind(inputList.widthProperty());
+        passwordInputBox.minWidthProperty().bind(inputList.widthProperty());
+        usernameInputBox.minWidthProperty().bind(inputList.widthProperty());
+
+        userInput.minWidthProperty().bind(dataInputBox.widthProperty().multiply(0.9));
+        passwordInput.minWidthProperty().bind(passwordInputBox.widthProperty().multiply(0.9));
+        usernameInput.minWidthProperty().bind(usernameInputBox.widthProperty().multiply(0.9));
     }
 }

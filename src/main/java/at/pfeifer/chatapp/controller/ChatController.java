@@ -11,6 +11,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
@@ -42,10 +43,10 @@ public class ChatController implements Initializable {
             displayMessage("You: " + messageWithSignature);
             messageInput.clear();
         } catch (NotStartedException e) {
-            RoutingService.toModeSelectionScene(chatScene);
+            RoutingService.toModeSelectionScene((Stage) chatScene.getScene().getWindow());
             AlertService.showAlert(Alert.AlertType.ERROR, "Redirecting to the connection screen because no user is started!");
         } catch (IOException e) {
-            RoutingService.toModeSelectionScene(chatScene);
+            RoutingService.toModeSelectionScene((Stage) chatScene.getScene().getWindow());
             AlertService.showAlert(Alert.AlertType.ERROR, "FATAL ERROR (Redirecting to connect screen): " + e);
         }
 
