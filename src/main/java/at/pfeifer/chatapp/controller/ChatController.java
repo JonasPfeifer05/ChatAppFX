@@ -111,8 +111,7 @@ public class ChatController implements Initializable {
         return messages
             .getItems()
             .stream()
-            .collect(() -> new StringJoiner("\n"), StringJoiner::add, StringJoiner::merge)
-            .toString();
+            .collect(Collectors.joining("\n");
     }
 
     private void saveMessagesToFile(String content, File file) {
