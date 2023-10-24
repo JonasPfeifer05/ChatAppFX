@@ -7,19 +7,30 @@ import at.pfeifer.chatapp.services.exceptions.NotStartedException;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.StringJoiner;
 
 public class ChatController implements Initializable {
 
     @FXML
     private AnchorPane chatScene;
+
+    @FXML
+    private Button sendButton;
 
     @FXML
     private TextField messageInput;
@@ -31,11 +42,29 @@ public class ChatController implements Initializable {
     private TextField signatureInput;
 
     @FXML
+    void saveMessage() {
+        var primaryStage = new Stage();
+        var vBox = new VBox();
+        primaryStage.setScene(new Scene(vBox, 0, 0));
+        primaryStage.setTitle("dummy scene to launch file explorer");
+        var fileChooser = new FileChooser();
+
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        var file = fileChooser.showSaveDialog(primaryStage);
+
+        if (file != null) {
+            saveMessagesToFile(getMessagesFormatted(), file);
+        }
+    }
+
+    @FXML
     void sendMessage() {
         String message = messageInput.getText();
 
         if (message.isEmpty()) return;
-        String messageWithSignature= combineMessageWithSignature(message, signatureInput.getText());
+        String messageWithSignature = combineMessageWithSignature(message, signatureInput.getText());
 
         try {
             ClientService.sendMessage(messageWithSignature);
@@ -73,5 +102,21 @@ public class ChatController implements Initializable {
             return message;
         }
         return String.format("%s | %s", message, signature);
+    }
+
+    public String getMessagesFormatted() {
+        return messages
+            .getItems()
+            .stream()
+            .collect(() -> new StringJoiner("\n"), StringJoiner::add, StringJoiner::merge)
+            .toString();
+    }
+
+    private void saveMessagesToFile(String content, File file) {
+        try (var writer = new PrintWriter(file)) {
+            writer.println(content);
+        } catch (IOException ioException) {
+            throw new RuntimeException("could not save messages to file", ioException);
+        }
     }
 }

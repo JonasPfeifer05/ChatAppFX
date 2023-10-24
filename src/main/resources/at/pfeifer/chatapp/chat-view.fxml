@@ -22,6 +22,9 @@
          <center>
             <ListView fx:id="messages" prefHeight="200.0" prefWidth="720.0" BorderPane.alignment="CENTER" />
          </center>
+         <top>
+            <Button fx:id="saveButton" mnemonicParsing="false" onAction="#saveMessage" text="save" BorderPane.alignment="TOP_RIGHT" />
+         </top>
       </BorderPane>
    </children>
 </AnchorPane>
