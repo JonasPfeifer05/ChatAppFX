@@ -9,14 +9,14 @@ import java.util.Objects;
 
 public class ChatLobby {
     private final Map<Socket, String> clients;
-    private final String password;
+    private final byte[] password;
 
-    public ChatLobby(String password) {
+    public ChatLobby(byte[] password) {
         clients = new HashMap<>();
-        this.password = Objects.requireNonNullElse(password, "");
+        this.password = Objects.requireNonNullElse(password, new byte[]{});
     }
 
-    public String getPassword() {
+    public byte[] getPassword() {
         return password;
     }
 

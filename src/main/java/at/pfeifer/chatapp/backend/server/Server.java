@@ -4,7 +4,6 @@ import at.pfeifer.chatapp.backend.ChatLobby;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.util.Scanner;
 
 public class Server {
     private final ServerSocket socket;
@@ -12,7 +11,7 @@ public class Server {
     private boolean alreadyStarted = false;
     private final ChatLobby lobby;
 
-    public Server(int port, String password) throws IOException {
+    public Server(int port, byte[] password) throws IOException {
         lobby = new ChatLobby(password);
 
         socket = new ServerSocket(port);

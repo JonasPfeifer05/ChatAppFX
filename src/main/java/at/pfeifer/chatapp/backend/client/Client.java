@@ -1,10 +1,13 @@
 package at.pfeifer.chatapp.backend.client;
 
+import at.pfeifer.chatapp.services.HashingService;
+import at.pfeifer.chatapp.services.exceptions.UsernameDeclinedException;
+import at.pfeifer.chatapp.services.exceptions.WrongPasswordException;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Scanner;
 import java.util.function.Consumer;
 
 public class Client {
@@ -12,15 +15,30 @@ public class Client {
     private final ClientOutputHandler clientOutputHandler;
     private boolean alreadyStarted = false;
     private final DataOutputStream dataOutputStream;
-    private final DataInputStream dataInputStream;
 
-    public Client(String ip, int port, Consumer<String> consumer) throws IOException {
+    public Client(String ip, int port, String username, byte[] password, Consumer<String> consumer) throws IOException, WrongPasswordException, UsernameDeclinedException {
         socket = new Socket(ip, port);
         socket.setSoTimeout(100);
         DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
         clientOutputHandler = new ClientOutputHandler(consumer, dataInputStream);
         dataOutputStream = new DataOutputStream(socket.getOutputStream());
-        this.dataInputStream = new DataInputStream(socket.getInputStream());
+
+        byte[] token = new byte[20];
+        int ignored = dataInputStream.read(token);
+        byte[] combinedHash = HashingService.hash(token, password);
+
+        dataOutputStream.write(combinedHash);
+
+        boolean succeeded = dataInputStream.readBoolean();
+        if (!succeeded) {
+            throw new WrongPasswordException("Wrong password provided");
+        }
+
+        dataOutputStream.writeUTF(username);
+        succeeded = dataInputStream.readBoolean();
+        if (!succeeded) {
+            throw new UsernameDeclinedException("Server declined the username");
+        }
     }
 
     public void sendMessage(String message) throws IOException {
@@ -42,29 +60,7 @@ public class Client {
         socket.close();
     }
 
-    public static void main(String[] args) throws IOException {
-        Client client = new Client("localhost", 8080, System.out::println);
-        client.startListening();
-
-        for (int i = 0; i < 5; i++) {
-            new Scanner(System.in).nextLine();
-            client.sendMessage("Hallo " + i);
-        }
-
-        client.stop();
-    }
-
     public void setConsumer(Consumer<String> consumer) {
         clientOutputHandler.setConsumer(consumer);
-    }
-
-// --Commented out by Inspection START (13.10.2023 18:59):
-//    public DataOutputStream getDataOutputStream() {
-//        return dataOutputStream;
-//    }
-// --Commented out by Inspection STOP (13.10.2023 18:59)
-
-    public DataInputStream getDataInputStream() {
-        return dataInputStream;
     }
 }
