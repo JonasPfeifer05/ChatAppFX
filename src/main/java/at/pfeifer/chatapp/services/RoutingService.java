@@ -3,8 +3,6 @@ package at.pfeifer.chatapp.services;
 import at.pfeifer.chatapp.App;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -14,10 +12,9 @@ public class RoutingService {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("mode-selection-view.fxml"));
         try {
             Scene scene = new Scene(fxmlLoader.load());
-            stage.hide();
             stage.setScene(scene);
-            stage.setMinHeight(300);
-            stage.setMinWidth(350);
+            stage.setMinWidth(300);
+            stage.setMinHeight(250);
             stage.centerOnScreen();
             stage.show();
         } catch (IOException e) {
@@ -28,11 +25,11 @@ public class RoutingService {
     public static void toChatScene(Stage stage) {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("chat-view.fxml"));
         try {
-            Scene scene = new Scene(fxmlLoader.load(), 720, 500);
+            Scene scene = new Scene(fxmlLoader.load());
             stage.hide();
             stage.setScene(scene);
-            stage.setMinHeight(720);
-            stage.setMinWidth(500);
+            stage.setMinWidth(720);
+            stage.setMinHeight(500);
             stage.centerOnScreen();
             stage.show();
         } catch (IOException e) {
