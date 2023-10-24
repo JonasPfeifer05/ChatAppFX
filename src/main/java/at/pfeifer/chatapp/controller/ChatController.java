@@ -46,16 +46,11 @@ public class ChatController implements Initializable {
 
     @FXML
     void saveMessage() {
-        var primaryStage = new Stage();
-        var vBox = new VBox();
-        primaryStage.setScene(new Scene(vBox, 0, 0));
-        primaryStage.setTitle("dummy scene to launch file explorer");
         var fileChooser = new FileChooser();
-
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
-        fileChooser.getExtensionFilters().add(extFilter);
-
-        var file = fileChooser.showSaveDialog(primaryStage);
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt")
+        );
+        var file = fileChooser.showSaveDialog(new Stage());
 
         if (file != null) {
             saveMessagesToFile(getMessagesFormatted(), file);
