@@ -1,6 +1,7 @@
 package at.pfeifer.chatapp.backend.server;
 
 import at.pfeifer.chatapp.backend.ChatLobby;
+import at.pfeifer.chatapp.services.HashingService;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -8,6 +9,8 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.Arrays;
+import java.util.Random;
 
 public class ClientHandler implements Runnable {
     private final Socket client;
@@ -29,9 +32,27 @@ public class ClientHandler implements Runnable {
     public void run() {
         try {
             client.setSoTimeout(1000);
+
+            byte[] tokenBytes = new byte[20];
+            new Random().nextBytes(tokenBytes);
+            byte[] correctHash = HashingService.hash(tokenBytes, lobby.getPassword());
+
+            dataOutputStream.write(tokenBytes);
+            byte[] clientPasswordHash = new byte[64];
+            int ignored = dataInputStream.read(clientPasswordHash);
+
+            if (!Arrays.equals(clientPasswordHash, correctHash)) {
+                System.out.println("Invalid password passed");
+                handelInput = false;
+                dataOutputStream.writeBoolean(false);
+                return;
+            }
+            dataOutputStream.writeBoolean(true);
+
             String username = dataInputStream.readUTF();
             if (lobby.usernameInUse(username)) {
                 dataOutputStream.writeBoolean(false);
+                handelInput = false;
                 client.close();
                 return;
             }
@@ -53,7 +74,6 @@ public class ClientHandler implements Runnable {
             try {
                 String input = dataInputStream.readUTF();
                 lobby.sendMessageFrom(client, input);
-                System.out.println(input);
             } catch (EOFException e) {
                 System.err.println("Can no longer read data from client: " + e.getMessage());
                 break;

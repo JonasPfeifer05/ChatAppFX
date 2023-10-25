@@ -4,16 +4,15 @@ import at.pfeifer.chatapp.backend.ChatLobby;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.util.Scanner;
 
 public class Server {
     private final ServerSocket socket;
     private final ClientAcceptor clientAcceptor;
     private boolean alreadyStarted = false;
-    private ChatLobby lobby;
+    private final ChatLobby lobby;
 
-    public Server(int port) throws IOException {
-        lobby = new ChatLobby();
+    public Server(int port, byte[] password) throws IOException {
+        lobby = new ChatLobby(password);
 
         socket = new ServerSocket(port);
         System.out.println("Created server socket");
@@ -35,14 +34,5 @@ public class Server {
         lobby.sendToEveryone("Server shut down!");
         clientAcceptor.stop();
         socket.close();
-    }
-
-    public static void main(String[] args) throws IOException {
-        Server server = new Server(8080);
-        server.start();
-
-        new Scanner(System.in).nextLine();
-
-        server.stop();
     }
 }

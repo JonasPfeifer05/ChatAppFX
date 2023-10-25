@@ -1,12 +1,10 @@
 package at.pfeifer.chatapp.controller;
 
-import at.pfeifer.chatapp.services.AlertService;
-import at.pfeifer.chatapp.services.ClientService;
-import at.pfeifer.chatapp.services.RoutingService;
-import at.pfeifer.chatapp.services.ServerService;
+import at.pfeifer.chatapp.services.*;
 import at.pfeifer.chatapp.services.exceptions.AlreadyStartedException;
 import at.pfeifer.chatapp.services.exceptions.InvalidPortException;
 import at.pfeifer.chatapp.services.exceptions.UsernameDeclinedException;
+import at.pfeifer.chatapp.services.exceptions.WrongPasswordException;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -37,6 +35,8 @@ public class ModeSelectionController implements Initializable {
     private TextField userInput;
     @FXML
     private TextField usernameInput;
+    @FXML
+    private TextField passwordInput;
 
     @FXML
     void performAction() {
@@ -52,8 +52,8 @@ public class ModeSelectionController implements Initializable {
         try {
             if (hostSelector.isSelected()) {
                 int port = Integer.parseInt(userInput);
-                ServerService.startServer(port);
-                ClientService.startClient("localhost", port, username);
+                ServerService.startServer(port, passwordInput.getText());
+                ClientService.startClient("localhost", port, username, passwordInput.getText());
             } else {
                 var parts = userInput.split(":");
                 if (parts.length != 2) {
@@ -61,7 +61,7 @@ public class ModeSelectionController implements Initializable {
                     return;
                 }
                 int port = Integer.parseInt(parts[1]);
-                ClientService.startClient(parts[0], port, username);
+                ClientService.startClient(parts[0], port, username, passwordInput.getText());
             }
         } catch (NumberFormatException e) {
             AlertService.showAlert(Alert.AlertType.WARNING, "Address with invalid port was passed!");
@@ -74,6 +74,10 @@ public class ModeSelectionController implements Initializable {
             return;
         } catch (AlreadyStartedException e) {
             AlertService.showAlert(Alert.AlertType.WARNING, "Couldn't start because client or server was already started!");
+            return;
+        } catch (WrongPasswordException e) {
+            ServerService.stopServerIfPresent();
+            AlertService.showAlert(Alert.AlertType.WARNING, "Wrong password passed!");
             return;
         } catch (IOException e) {
             ServerService.stopServerIfPresent();

@@ -8,11 +8,11 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="modeSelectionScene" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.pfeifer.chatapp.controller.ModeSelectionController">
+<AnchorPane fx:id="modeSelectionScene" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.pfeifer.chatapp.controller.ModeSelectionController">
     <children>
-        <VBox prefHeight="200.0" prefWidth="300.0">
+        <VBox prefHeight="250.0" prefWidth="300.0">
             <children>
-                <HBox alignment="CENTER" prefHeight="84.0" prefWidth="300.0" spacing="20.0">
+                <HBox alignment="CENTER" prefHeight="50.0" prefWidth="300.0" spacing="20.0">
                     <children>
                         <RadioButton fx:id="hostSelector" mnemonicParsing="false" selected="true" text="Host">
                             <toggleGroup>
@@ -22,7 +22,7 @@
                         <RadioButton fx:id="joinSelector" mnemonicParsing="false" text="Join" toggleGroup="$mode" />
                     </children>
                 </HBox>
-                <HBox alignment="CENTER" prefHeight="131.0" prefWidth="300.0">
+                <HBox alignment="CENTER" prefHeight="153.0" prefWidth="300.0">
                     <children>
                   <VBox prefHeight="61.0" prefWidth="395.0">
                      <children>
@@ -36,11 +36,16 @@
                               <TextField fx:id="usernameInput" onAction="#performAction" prefHeight="34.0" prefWidth="275.0" promptText="Your username:" />
                            </children>
                         </HBox>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                           <children>
+                              <TextField fx:id="passwordInput" onAction="#performAction" prefHeight="34.0" prefWidth="275.0" promptText="Password or empty:" />
+                           </children>
+                        </HBox>
                      </children>
                   </VBox>
                     </children>
                 </HBox>
-                <HBox alignment="CENTER" prefHeight="77.0" prefWidth="300.0">
+                <HBox alignment="CENTER" prefHeight="50.0" prefWidth="300.0">
                     <children>
                         <Button fx:id="actionButton" mnemonicParsing="false" onAction="#performAction" prefHeight="25.0" prefWidth="133.0" text="Host a lobby" />
                     </children>
