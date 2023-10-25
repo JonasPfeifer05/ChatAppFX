@@ -7,7 +7,6 @@ import at.pfeifer.chatapp.services.exceptions.NotStartedException;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Alert;
@@ -21,7 +20,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.StringJoiner;
 
 public class ChatController implements Initializable {
 
@@ -102,10 +100,8 @@ public class ChatController implements Initializable {
     }
 
     public String getMessagesFormatted() {
-        return messages
-            .getItems()
-            .stream()
-            .collect(Collectors.joining("\n");
+        return String.join("\n", messages
+            .getItems());
     }
 
     private void saveMessagesToFile(String content, File file) {
