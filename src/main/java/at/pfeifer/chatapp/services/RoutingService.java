@@ -26,6 +26,7 @@ public class RoutingService {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("chat-view.fxml"));
         try {
             Scene scene = new Scene(fxmlLoader.load(), 720, 500);
+            stage.setResizable(true);
             stage.hide();
             stage.setScene(scene);
             stage.centerOnScreen();
