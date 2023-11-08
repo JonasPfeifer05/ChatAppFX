@@ -1,6 +1,7 @@
 module at.pfeifer.chatapp {
     requires javafx.controls;
     requires javafx.fxml;
+    requires lombok;
 
 
     opens at.pfeifer.chatapp to javafx.fxml;
